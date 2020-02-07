@@ -27,6 +27,13 @@ export default Vue.extend({
   },
   onLoad () {},
   methods: {
+    // 跳转到手机号登录页
+    phoneLogin(){
+      uni.navigateTo({
+        url:'/pages/phoneLogin/index'
+      })
+    },
+    // 微信登录
     wxLogin (e: any) {
       console.log(e)
       // 如果用户点击拒绝授权则直接return

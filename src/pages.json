@@ -8,6 +8,12 @@
       }
     },
     {
+      "path": "pages/phoneLogin/index",
+      "style": {
+        "navigationBarTitleText": "手机号登录"
+      }
+    },
+    {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "首页"
