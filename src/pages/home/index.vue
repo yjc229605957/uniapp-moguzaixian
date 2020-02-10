@@ -1,36 +1,196 @@
 <template>
-  <view class="content">
+  <view class="home-container">
+    <!-- 搜索框 -->
+    <view class="searchBar" @click="goSearchPage">
+      <icon class="icon" type="search" size="16" color="#ff8f44" />
+      <text>{{placeholder}}</text>
+    </view>
+    <!-- 轮播图 -->
+    <swiper indicator-dots circular autoplay indicator-active-color="#fff" :interval="3000">
+      <navigator
+        :url="'/pages/course-detail/index?id='+item.course_id"
+        v-for="item in swipers"
+        :key="item.id"
+      >
+        <swiper-item>
+          <image :src="item.img_url" />
+        </swiper-item>
+      </navigator>
+    </swiper>
+    <!-- 推荐课程 -->
     <view>
-      <text class="title">{{ title }}</text>
+      <view class="tips">
+        <text>推荐课程</text>
+        <image @click="goToCoursePage" src="/static/images/arrow@2x.png" alt />
+      </view>
+      <scroll-view scroll-x class="course-container">
+        <navigator
+          :url="'/pages/course-detail/index?id='+item.relation_id"
+          class="course-item"
+          v-for="item in courses"
+          :key="item.id"
+        >
+          <image :src="item.icon" alt />
+        </navigator>
+      </scroll-view>
+    </view>
+    <!-- 热门视频 -->
+    <view>
+      <view class="tips">
+        <text>热门视频</text>
+        <image @click="goToCourseDetail(3)" src="/static/images/arrow@2x.png" alt />
+      </view>
+      <view class="hot-video">
+        <navigator
+          :url="'/pages/course-detail/index?id='+item.course_id"
+          class="video-item"
+          v-for="item in videos"
+          :key="item.id"
+        >
+          <image :src="item.cover_photo_url" alt />
+          <view>
+            <text class="title">{{item.name}}</text>
+          </view>
+          <view>
+            <text class="subtitle">{{item.view_count}}人已观看</text>
+          </view>
+        </navigator>
+      </view>
     </view>
   </view>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
+import Request from "../../utils/request";
 export default Vue.extend({
-  data () {
+  data() {
     return {
-      title: '这是首页'
-    }
+      placeholder: "请输入课程的名称",
+      swipers: [],
+      courses: [],
+      videos: []
+    };
   },
-  onLoad () {},
-  methods: {}
-})
+  onLoad() {
+    // 页面已加载就发送请求获取资源数据
+    this.geiSwipersData();
+    this.geiCoursesData();
+    this.geiVideosData();
+  },
+  methods: {
+    // 获取轮播图数据
+    async geiSwipersData() {
+      let res = await Request({ url: "home/swipers" });
+      this.swipers = res.data.message;
+    },
+    // 获取课程列表数据
+    async geiCoursesData() {
+      let res = await Request({ url: "home/course" });
+      this.courses = res.data.message;
+    },
+    // 获取视频列表数据
+    async geiVideosData() {
+      let res = await Request({ url: "home/video" });
+      this.videos = res.data.message;
+    },
+    // 跳转到课程tabs页面
+    goToCoursePage() {
+      uni.switchTab({ url: "/pages/course/index" });
+    },
+    // 跳转到搜索页面
+    goSearchPage(){
+      uni.navigateTo({url:"/pages/search/index"})
+    }
+  }
+});
 </script>
 
-<style>
-.content {
-  text-align: center;
-  height: 400upx;
+<style lang="less" scoped>
+.home-container {
+  padding: 20rpx;
+  background-color: #fff;
 }
-.logo {
-  height: 200upx;
-  width: 200upx;
-  margin-top: 200upx;
+.searchBar {
+  height: 50upx;
+  width: 100%;
+  margin-bottom: 15upx;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ff8f44;
+  border-radius: 50upx;
+  .icon {
+    // left: 5upx;
+    margin: 0upx 15upx 0 20upx;
+  }
+  text{
+    line-height: 1;
+  }
 }
-.title {
-  font-size: 36upx;
-  color: #8f8f94;
+swiper {
+  width: 100%;
+  height: 342rpx;
+  swiper-item {
+    width: 100%;
+    height: 100%;
+  }
+  image {
+    width: 100%;
+    height: 100%;
+  }
+}
+.tips {
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text {
+    font-size: 36rpx;
+    font-weight: 700;
+    color: #212121;
+  }
+  image {
+    width: 48rpx;
+    height: 48rpx;
+  }
+}
+.course-container {
+  height: 170rpx;
+  white-space: nowrap;
+  .course-item {
+    width: 296rpx;
+    height: 168rpx;
+    display: inline-block;
+    margin-right: 32rpx;
+    image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.hot-video {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  .video-item {
+    width: 340prx;
+    image {
+      width: 340rpx;
+      height: 210rpx;
+      border-radius: 12rpx;
+    }
+    .title {
+      margin-top: 15rpx;
+      color: #262626;
+      font-size: 26rpx;
+    }
+    .subtitle {
+      margin-top: 15rpx;
+      margin-bottom: 15rpx;
+      color: #959595;
+      font-size: 18rpx;
+    }
+  }
 }
 </style>

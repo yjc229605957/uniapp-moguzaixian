@@ -32,7 +32,7 @@
 
 <script>
 import Vue from 'vue'
-import request from '../../utils/request'
+import Request from '../../utils/request'
 export default Vue.extend({
   data () {
     return {
@@ -86,7 +86,7 @@ export default Vue.extend({
         }, 1000)
 
         // 发送请求获取验证码
-        let res = await request({
+        let res = await Request({
           url: 'user/vcode',
           data: {
             phone: this.phone
@@ -133,7 +133,7 @@ export default Vue.extend({
         return
       }
       // 发送请求进行登录
-      let res = await request({
+      let res = await Request({
         url: 'user/login',
         method: 'POST',
         data: {
